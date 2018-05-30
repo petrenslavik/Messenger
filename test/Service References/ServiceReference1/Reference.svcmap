@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="490162d2-1287-40c7-b572-55d3b287898b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:50548/Messenger.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Messenger.disco" MetadataType="Disco" ID="f4b6f341-4352-4560-8d04-72e5034dbdd9" SourceId="1" SourceUrl="http://localhost:50548/Messenger.svc?disco" />
+    <MetadataFile FileName="MessengerService.wsdl" MetadataType="Wsdl" ID="0e322b44-3799-4e82-b893-b20df6341fac" SourceId="1" SourceUrl="http://localhost:50548/Messenger.svc?wsdl" />
+    <MetadataFile FileName="Messenger.xsd" MetadataType="Schema" ID="1e1e8088-21a6-481f-923c-727f05703366" SourceId="1" SourceUrl="http://localhost:50548/Messenger.svc?xsd=xsd1" />
+    <MetadataFile FileName="Messenger1.xsd" MetadataType="Schema" ID="1a5d84f7-83ac-424b-a655-92d2f6669d78" SourceId="1" SourceUrl="http://localhost:50548/Messenger.svc?xsd=xsd0" />
+    <MetadataFile FileName="Messenger2.xsd" MetadataType="Schema" ID="fea98226-9038-4282-ae6c-d898ce8e9b8c" SourceId="1" SourceUrl="http://localhost:50548/Messenger.svc?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="MessengerServices.MessengerService" CodeBehind="Messenger.svc.cs" %>

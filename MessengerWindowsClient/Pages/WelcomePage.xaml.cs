@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace MessengerClient.Pages
+namespace MessengerWindowsClient.Pages
 {
     /// <summary>
     /// Interaction logic for WelcomePage.xaml

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MessengerClient.MessengerService {
+namespace MessengerWindowsClient.MessengerService {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -41,12 +41,12 @@ namespace MessengerClient.MessengerService {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMessengerChannel : IMessenger, System.ServiceModel.IClientChannel {
+    public interface IMessengerChannel : MessengerWindowsClient.MessengerService.IMessenger, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MessengerClient : System.ServiceModel.ClientBase<IMessenger>, IMessenger {
+    public partial class MessengerClient : System.ServiceModel.ClientBase<MessengerWindowsClient.MessengerService.IMessenger>, MessengerWindowsClient.MessengerService.IMessenger {
         
         public MessengerClient() {
         }

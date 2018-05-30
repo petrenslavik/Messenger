@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MessengerClient.Properties
+namespace MessengerWindowsClient.Properties
 {
 
 

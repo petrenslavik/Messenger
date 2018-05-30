@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security;
 
-namespace MessengerClient.Events
+namespace MessengerWindowsClient.Events
 {
     public delegate void RegisterEvent(object sender, RegisterEventArgs e);
 

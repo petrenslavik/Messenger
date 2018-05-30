@@ -1,10 +1,10 @@
-﻿<Window x:Class="MessengerClient.MainWindow"
+﻿<Window x:Class="MessengerWindowsClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MessengerClient"
-        xmlns:pages="clr-namespace:MessengerClient.Pages"
+        xmlns:local="clr-namespace:MessengerWindowsClient"
+        xmlns:pages="clr-namespace:MessengerWindowsClient.Pages"
         mc:Ignorable="d"
         Title="MainWindow" Height="445.64" Width="649.128" Closed="Window_Closed">
     <Window.Background>

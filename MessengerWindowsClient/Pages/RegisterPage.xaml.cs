@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MessengerClient.Events;
+using MessengerWindowsClient.Events;
 
-namespace MessengerClient.Pages
+namespace MessengerWindowsClient.Pages
 {
     /// <summary>
     /// Interaction logic for RegisterPage.xaml

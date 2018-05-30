@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MessengerClient
+namespace MessengerWindowsClient
 {
     public class ServiceManager
     {

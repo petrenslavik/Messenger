@@ -15,9 +15,9 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MessengerClient.Events;
+using MessengerWindowsClient.Events;
 
-namespace MessengerClient
+namespace MessengerWindowsClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

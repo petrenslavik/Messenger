@@ -74,7 +74,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\IPasswordHasher.cs" />
     <Compile Include="IMessenger.cs" />
+    <Compile Include="Managers\PasswordHasher.cs" />
     <Compile Include="Messenger.svc.cs">
       <DependentUpon>Messenger.svc</DependentUpon>
     </Compile>

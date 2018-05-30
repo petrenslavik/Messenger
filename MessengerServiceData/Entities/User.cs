@@ -17,6 +17,7 @@ namespace MessengerServiceData.Entities
         [Required]
         public string PasswordHash { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
         public bool EmailConfirmed { get; set; }

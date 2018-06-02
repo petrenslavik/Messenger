@@ -26,7 +26,17 @@ namespace MessengerWindowsClient.Pages
             InitializeComponent();
         }
 
+        public event ChangePageEvent ChangePage;
         public event RegisterEvent RegisterReady;
+
+        public Control WelcomePage
+        {
+            get { return (Control)this.GetValue(WelcomePageProperty); }
+            set { this.SetValue(WelcomePageProperty, value); }
+        }
+
+        public static readonly DependencyProperty WelcomePageProperty = DependencyProperty.Register(
+            "WelcomePage", typeof(Control), typeof(RegisterPage), new PropertyMetadata(null));
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
@@ -35,6 +45,11 @@ namespace MessengerWindowsClient.Pages
             var password = PasswordTextBox.SecurePassword;
             var email = EmailTextBox.Text;
             RegisterReady(this, new RegisterEventArgs(name, username, password, email));
+        }
+
+        private void BackButton_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ChangePage(this, new ChangePageEventArgs(WelcomePage, this, ChangePageDirection.Backward));
         }
     }
 }

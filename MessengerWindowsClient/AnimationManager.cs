@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,26 +15,38 @@ namespace MessengerWindowsClient
         private static FrameworkElement _oldPage;
         private static FrameworkElement _container;
         private static double _containerInitialWidth;
+        private static HorizontalAlignment _alignment;
 
         static AnimationManager()
         {
 
         }
 
-        public static void AnimateNextPage(Control newPage, Control oldPage,FrameworkElement container)
+        public static void AnimateForwardPage(Control newPage, Control oldPage, FrameworkElement container, double windowWidth)
         {
             _newPage = newPage;
             _oldPage = oldPage;
             _container = container;
-            _containerInitialWidth = container.ActualWidth;
-           BeginDoubleAnimation();
+            _containerInitialWidth = windowWidth;
+            _alignment = HorizontalAlignment.Right;
+            BeginDoubleAnimation(HorizontalAlignment.Left);
         }
 
-        private static void BeginDoubleAnimation()
+        public static void AnimateBackwardPage(Control newPage, Control oldPage, FrameworkElement container, double windowWidth)
         {
-            var animation = CreateDoubleAnimation(_container.ActualWidth, 0, 0.1, TimeSpan.FromSeconds(0.5));
+            _newPage = newPage;
+            _oldPage = oldPage;
+            _container = container;
+            _containerInitialWidth = windowWidth;
+            _alignment = HorizontalAlignment.Left;
+            BeginDoubleAnimation(HorizontalAlignment.Right);
+        }
+
+        private static void BeginDoubleAnimation(HorizontalAlignment toSide)
+        {
+            var animation = CreateDoubleAnimation(_containerInitialWidth, 0, 0.1, TimeSpan.FromSeconds(0.5));
             animation.Completed += ContinueAnimation;
-            _container.HorizontalAlignment = HorizontalAlignment.Left;
+            _container.HorizontalAlignment = toSide;
             RunStoryboard(animation, new PropertyPath(FrameworkElement.WidthProperty));
         }
 
@@ -44,7 +56,7 @@ namespace MessengerWindowsClient
             _newPage.Visibility = Visibility.Visible;
             var animation = CreateDoubleAnimation(0, _containerInitialWidth, 0.1, TimeSpan.FromSeconds(0.5));
             animation.Completed += FinishAnimation;
-            _container.HorizontalAlignment = HorizontalAlignment.Right;
+            _container.HorizontalAlignment = _alignment;
             RunStoryboard(animation, new PropertyPath(FrameworkElement.WidthProperty));
         }
 

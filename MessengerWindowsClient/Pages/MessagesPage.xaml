@@ -9,27 +9,73 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="260"/>
-            <ColumnDefinition Width="1"/>
-            <ColumnDefinition Width="*" MinWidth="385"/>
+            <ColumnDefinition Width="2"/>
+            <ColumnDefinition Width="*" MinWidth="260"/>
         </Grid.ColumnDefinitions>
-        <GridSplitter Grid.Column="1" x:Name="InterfaceSplitter" HorizontalAlignment="Center" Width="8" SizeChanged="InterfaceSplitter_SizeChanged"/>
-        <Grid Grid.Column="0" x:Name="ConversationsGrid" MinWidth="250">
+        <GridSplitter Grid.Column="1" x:Name="InterfaceSplitter" HorizontalAlignment="Center" Width="2"/>
+        <Grid Grid.Column="0" x:Name="ConversationsGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="65"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid x:Name="SearchAndMenuGrid" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Green">
+            <Grid x:Name="SearchAndMenuGrid" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="../Resources/menuIcon.png" Width="40" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Height="30" Margin="15" FontFamily="Arial" VerticalContentAlignment="Center"/>
             </Grid>
-            <ListBox x:Name="ConversationsList" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Blue">
+            <ListBox x:Name="ConversationsListBox" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" BorderThickness="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="5" Height="55">
-                            <TextBlock FontSize="18" Text="{Binding}"></TextBlock>
+                        <StackPanel Margin="5" Height="55" Orientation="Horizontal" ClipToBounds="True">
+                            <Border Background="Red" Width="40" Height="40" VerticalAlignment="Center">
+                                <Border.Clip>
+                                    <EllipseGeometry RadiusX="20" RadiusY="20" Center="20,20"/>
+                                </Border.Clip>
+                                <TextBlock FontSize="18" Text="GV" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock FontSize="18" Text="{Binding}" Margin="15,2.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <Grid Grid.Column="2" x:Name="MessagesGRid" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75"/>
+        <Grid Grid.Column="2" x:Name="MessagesGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" x:Name="ConversationPropertiesGrid" Background="White"></Grid>
+            <ListBox x:Name="MessagesListBox" Grid.Row="1" Background="Transparent" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Messages}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,5">
+                            <Border x:Name="MessageBorder" CornerRadius="20">
+                                <TextBlock x:Name="MessageTextBlock" FontSize="18" Text="{Binding Content}" HorizontalAlignment="Right" Margin="10,15"/>
+                            </Border>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsAuthor}" Value="true">
+                                <Setter TargetName="MessageBorder" Property="Background" Value="White"/>
+                                <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Right"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsAuthor}" Value="false">
+                                <Setter TargetName="MessageBorder" Property="Background" Value="Lime"/>
+                                <Setter TargetName="MessageBorder" Property="HorizontalAlignment" Value="Left"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Grid Grid.Row="2" x:Name="SendMessageGrid" Background="White">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="MessageTextBox" Grid.Column="0" BorderThickness="0" Margin="10,10" VerticalContentAlignment="Center" AcceptsReturn="True" PreviewKeyDown="MessageTextBox_PreviewKeyDown"/>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

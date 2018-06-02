@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,18 +21,40 @@ namespace MessengerWindowsClient.Pages
     /// </summary>
     public partial class MessagesPage : UserControl
     {
-        private List<string> Conversations;
+        private ObservableCollection<string> Conversations;
+        public ObservableCollection<Message> Messages { get; set; }
 
         public MessagesPage()
         {
             InitializeComponent();
-            Conversations = new List<string> {"Text", "Text"};
-            ConversationsList.ItemsSource = Conversations;
+            Conversations = new ObservableCollection<string> {"Text", "Text","text","text","text","text","text","text","GHGH","fasfa","Afsaf"};
+            Messages = new ObservableCollection<Message>
+            {
+                new Message() {Content = "Some text", IsAuthor = true},
+                new Message() {Content = "Some text", IsAuthor = false},
+                new Message() {Content = "Some text", IsAuthor = true},
+                new Message() {Content = "Some text", IsAuthor = true},
+                new Message() {Content = "Some text", IsAuthor = false},
+                new Message() {Content = "Some text", IsAuthor = true}
+            };
+            ConversationsListBox.ItemsSource = Conversations;
+            MessagesListBox.ItemsSource = Messages;
         }
 
-        private void InterfaceSplitter_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MessageTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            
+            if (e.Key == Key.Enter && (e.KeyboardDevice.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift)
+            {
+                Messages.Add(new Message() {Content = MessageTextBox.Text, IsAuthor = true});
+                MessageTextBox.Clear();
+                e.Handled = true;
+            }
         }
+    }
+
+    public class Message
+    {
+        public string Content { get; set; }
+        public bool IsAuthor { get; set; }
     }
 }

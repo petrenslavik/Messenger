@@ -7,12 +7,10 @@ namespace MessengerWindowsClient
     public partial class MainWindow : Window
     {
         private ServiceManager _serviceManager;
-        private UIElement _currentPage;
 
         public MainWindow()
         {
             InitializeComponent();
-            _currentPage = this.Container.Children[0];
             this.RegisterPage.RegisterReady += RegisterUser;
             this.RegisterPage.ChangePage += ChangePage;
             this.WelcomePage.ChangePage += ChangePage;
@@ -35,8 +33,9 @@ namespace MessengerWindowsClient
 
         private async void RegisterUser(object sender, RegisterEventArgs e)
         {
-            var isSucceed = await _serviceManager.RegisterUser(e.Name, e.Username, e.Password.ToString(), e.Email);
-            e.Password.Dispose();
+            var isSucceed = await _serviceManager.RegisterUser(e.Name, e.Username, e.Password, e.Email);
+            if(isSucceed)
+                AnimationManager.AnimateForwardPage(MessagesPage,RegisterPage,Container,this.ActualWidth);
         }
 
         private void Window_Closed(object sender, EventArgs e)

@@ -9,10 +9,10 @@ namespace MessengerWindowsClient.Events
     {
         public string Name { get; set; }
         public string Username { get; set; }
-        public SecureString Password { get; set; }
+        public string Password { get; set; }
         public string Email { get; set; }
 
-        public RegisterEventArgs(string name, string username, SecureString password, string email)
+        public RegisterEventArgs(string name, string username, string password, string email)
         {
             Name = name;
             Username = username;

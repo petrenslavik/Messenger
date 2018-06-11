@@ -9,15 +9,18 @@ namespace MessengerServices
     public interface IMessenger
     {
         [OperationContract]
-        Task<bool> RegisterUser(string name, string username, string password, string email);
+        byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus);
+
+        [OperationContract]
+        bool RegisterUser(string name, string username, string password, string email, byte[] iv);
 
         [OperationContract]
         bool FriendUser(int idFirst, int idSecond);
 
         [OperationContract]
-        TimeSpan PingToServer(DateTime dateTime);
+        bool IsUniqueUsername(string username);
 
         [OperationContract]
-        bool IsUniqueUsername(string username);
+        bool Login(string username, string password, byte[] iv);
     }
 }

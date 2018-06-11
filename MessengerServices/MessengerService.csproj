@@ -51,6 +51,8 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Selectors" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -71,12 +73,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Messenger.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\IPasswordHasher.cs" />
+    <Compile Include="Core\IRequestHelper.cs" />
     <Compile Include="IMessenger.cs" />
     <Compile Include="Managers\PasswordHasher.cs" />
+    <Compile Include="Managers\RequestHelper.cs" />
+    <Compile Include="Managers\SessionManager.cs" />
     <Compile Include="Messenger.svc.cs">
       <DependentUpon>Messenger.svc</DependentUpon>
     </Compile>
@@ -95,6 +102,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj">
+      <Project>{1b378ea8-f172-419f-9243-12ed002dc8a3}</Project>
+      <Name>CommonLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MessengerServiceData\MessengerServiceData.csproj">
       <Project>{bad15e89-1626-474f-8cff-84ca3016c3bc}</Project>
       <Name>MessengerServiceData</Name>

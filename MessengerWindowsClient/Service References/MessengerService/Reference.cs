@@ -15,11 +15,17 @@ namespace MessengerWindowsClient.MessengerService {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MessengerService.IMessenger")]
     public interface IMessenger {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
-        bool RegisterUser(string name, string username, string password, string email);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/GetEncryptedSessionKeyResponse")]
+        byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/GetEncryptedSessionKeyResponse")]
+        System.Threading.Tasks.Task<byte[]> GetEncryptedSessionKeyAsync(byte[] exponent, byte[] modulus);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
-        System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email);
+        bool RegisterUser(string name, string username, string password, string email, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
+        System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email, byte[] iv);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/FriendUser", ReplyAction="http://tempuri.org/IMessenger/FriendUserResponse")]
         bool FriendUser(int idFirst, int idSecond);
@@ -27,17 +33,17 @@ namespace MessengerWindowsClient.MessengerService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/FriendUser", ReplyAction="http://tempuri.org/IMessenger/FriendUserResponse")]
         System.Threading.Tasks.Task<bool> FriendUserAsync(int idFirst, int idSecond);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/PingToServer", ReplyAction="http://tempuri.org/IMessenger/PingToServerResponse")]
-        System.TimeSpan PingToServer(System.DateTime dateTime);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/PingToServer", ReplyAction="http://tempuri.org/IMessenger/PingToServerResponse")]
-        System.Threading.Tasks.Task<System.TimeSpan> PingToServerAsync(System.DateTime dateTime);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/IsUniqueUsername", ReplyAction="http://tempuri.org/IMessenger/IsUniqueUsernameResponse")]
         bool IsUniqueUsername(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/IsUniqueUsername", ReplyAction="http://tempuri.org/IMessenger/IsUniqueUsernameResponse")]
         System.Threading.Tasks.Task<bool> IsUniqueUsernameAsync(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
+        bool Login(string username, string password, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
+        System.Threading.Tasks.Task<bool> LoginAsync(string username, string password, byte[] iv);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -67,12 +73,20 @@ namespace MessengerWindowsClient.MessengerService {
                 base(binding, remoteAddress) {
         }
         
-        public bool RegisterUser(string name, string username, string password, string email) {
-            return base.Channel.RegisterUser(name, username, password, email);
+        public byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus) {
+            return base.Channel.GetEncryptedSessionKey(exponent, modulus);
         }
         
-        public System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email) {
-            return base.Channel.RegisterUserAsync(name, username, password, email);
+        public System.Threading.Tasks.Task<byte[]> GetEncryptedSessionKeyAsync(byte[] exponent, byte[] modulus) {
+            return base.Channel.GetEncryptedSessionKeyAsync(exponent, modulus);
+        }
+        
+        public bool RegisterUser(string name, string username, string password, string email, byte[] iv) {
+            return base.Channel.RegisterUser(name, username, password, email, iv);
+        }
+        
+        public System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email, byte[] iv) {
+            return base.Channel.RegisterUserAsync(name, username, password, email, iv);
         }
         
         public bool FriendUser(int idFirst, int idSecond) {
@@ -83,20 +97,20 @@ namespace MessengerWindowsClient.MessengerService {
             return base.Channel.FriendUserAsync(idFirst, idSecond);
         }
         
-        public System.TimeSpan PingToServer(System.DateTime dateTime) {
-            return base.Channel.PingToServer(dateTime);
-        }
-        
-        public System.Threading.Tasks.Task<System.TimeSpan> PingToServerAsync(System.DateTime dateTime) {
-            return base.Channel.PingToServerAsync(dateTime);
-        }
-        
         public bool IsUniqueUsername(string username) {
             return base.Channel.IsUniqueUsername(username);
         }
         
         public System.Threading.Tasks.Task<bool> IsUniqueUsernameAsync(string username) {
             return base.Channel.IsUniqueUsernameAsync(username);
+        }
+        
+        public bool Login(string username, string password, byte[] iv) {
+            return base.Channel.Login(username, password, iv);
+        }
+        
+        public System.Threading.Tasks.Task<bool> LoginAsync(string username, string password, byte[] iv) {
+            return base.Channel.LoginAsync(username, password, iv);
         }
     }
 }

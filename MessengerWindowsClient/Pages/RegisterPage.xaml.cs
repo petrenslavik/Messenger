@@ -42,7 +42,7 @@ namespace MessengerWindowsClient.Pages
         {
             var name = NameTextBox.Text;
             var username = UsernameTextBox.Text;
-            var password = PasswordTextBox.SecurePassword;
+            var password = PasswordTextBox.Password;
             var email = EmailTextBox.Text;
             RegisterReady(this, new RegisterEventArgs(name, username, password, email));
         }

@@ -13,6 +13,8 @@ using MessengerServiceData.DbContexts;
 using MessengerServiceData.Entities;
 using MessengerServices.Core;
 using MessengerServices.Managers;
+using System.Security.Cryptography;
+using Aes = CommonLibrary.Security.Aes;
 
 namespace MessengerServices
 {
@@ -21,10 +23,15 @@ namespace MessengerServices
     public class MessengerService : IMessenger
     {
         private IPasswordHasher _passwordHasher;
+        private IRequestHelper _requestHelper;
+        private Aes _aes;
 
         public MessengerService()
         {
             _passwordHasher = new PasswordHasher();
+            _requestHelper = new RequestHelper();
+            _aes = new Aes();
+            _aes.SetAesKey(SessionManager.GetKeyForCurrentClient());
         }
 
         public bool FriendUser(int idFirst, int idSecond)
@@ -33,7 +40,7 @@ namespace MessengerServices
             {
                 var first = db.Users.Find(idFirst);
                 var second = db.Users.Find(idSecond);
-                var friendship = new Friendship {FirstUser = first,SecondUser = second,Status = 2};
+                var friendship = new Friendship { FirstUser = first, SecondUser = second, Status = 2 };
                 db.Friendships.Add(friendship);
                 db.SaveChanges();
             }
@@ -50,19 +57,57 @@ namespace MessengerServices
             }
         }
 
-        public TimeSpan PingToServer(DateTime dateTime)
+        public bool Login(string username, string password, byte[] iv)
         {
-            return DateTime.Now - dateTime;
+            _aes.Decrypt(iv, username, password);
+            password = _passwordHasher.HashPassword(password);
+            using (var db = new UserContext())
+            {
+                var user = db.Users.FirstOrDefault(x => x.Username == username && x.PasswordHash == password);
+                if (user == null)
+                    return false;
+                db.Sessions.Add(new Session()
+                {
+                    Holder = user,
+                    Ip = _requestHelper.GetClientIp(),
+                    Key = SessionManager.PopKeyForCurrentClient()
+                });
+                return true;
+            }
         }
 
-        public async Task<bool> RegisterUser(string name, string username, string password, string email)
+        public byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus)
         {
-            if (!await IsUniqueEmailAndUsername(email, username))
+            var rsa = new RSACryptoServiceProvider(2376);
+            rsa.ImportParameters(new RSAParameters()
+            {
+                Exponent = exponent,
+                Modulus = modulus
+            });
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                var sessionKey = new byte[32];
+                rng.GetBytes(sessionKey);
+                var encryptedKey = rsa.Encrypt(sessionKey, false);
+                SessionManager.AddKeyForCurrentClient(sessionKey);
+                return encryptedKey;
+            }
+        }
+
+        public bool RegisterUser(string name, string username, string password, string email, byte[] iv)
+        {
+            var arr = _aes.Decrypt(iv, name, username, password, email);
+            name = arr[0];
+            username = arr[1];
+            password = arr[2];
+            email = arr[3];
+            if (!IsUniqueEmailAndUsername(email, username))
                 return false;
 
             using (var db = new UserContext())
             {
-                db.Users.Add(new User()
+                var user = db.Users.Add(new User()
                 {
                     Email = email,
                     EmailConfirmed = false,
@@ -70,17 +115,23 @@ namespace MessengerServices
                     PasswordHash = _passwordHasher.HashPassword(password),
                     Name = name
                 });
-                await db.SaveChangesAsync();
+                var session = db.Sessions.Add(new Session()
+                {
+                    Holder = user,
+                    Ip = _requestHelper.GetClientIp(),
+                    Key = SessionManager.PopKeyForCurrentClient(),
+                });
+                db.SaveChanges();
             }
 
             return true;
         }
 
-        private async Task<bool> IsUniqueEmailAndUsername(string email, string username)
+        private bool IsUniqueEmailAndUsername(string email, string username)
         {
             using (var db = new UserContext())
             {
-                return null == await db.Users.FirstOrDefaultAsync(x => x.Email == email || x.Username == username);
+                return null == db.Users.FirstOrDefault(x => x.Email == email || x.Username == username);
             }
         }
     }

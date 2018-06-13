@@ -9,5 +9,6 @@ namespace MessengerServices.Core
     public interface IRequestHelper
     {
         string GetClientIp();
+        Session GetCurrentSession();
     }
 }

@@ -9,10 +9,10 @@ namespace MessengerServices
     public interface IMessenger
     {
         [OperationContract]
-        byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus);
+        void SetEncryptedSessionKey(byte[] EncryptedKey);
 
         [OperationContract]
-        bool RegisterUser(string name, string username, string password, string email, byte[] iv);
+        string RegisterUser(string name, string username, string password, string email, byte[] iv);
 
         [OperationContract]
         bool FriendUser(int idFirst, int idSecond);
@@ -21,6 +21,6 @@ namespace MessengerServices
         bool IsUniqueUsername(string username);
 
         [OperationContract]
-        bool Login(string username, string password, byte[] iv);
+        string Login(string username, string password, byte[] iv);
     }
 }

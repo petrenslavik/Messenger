@@ -12,6 +12,7 @@ namespace MessengerWindowsClient.Pages
     {
 
         public event ChangePageEvent ChangePage;
+        public event LoginEvent LoginReady;
 
         public Control WelcomePage
         {
@@ -30,6 +31,11 @@ namespace MessengerWindowsClient.Pages
         private void BackButton_OnMouseLeftButtonDown_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             ChangePage(this, new ChangePageEventArgs(WelcomePage, this, ChangePageDirection.Backward));
+        }
+
+        private void LoginButton_OnClick_Click(object sender, RoutedEventArgs e)
+        {
+            LoginReady(this, new LoginEventArgs(UsernameTextBox.Text, PasswordTextBox.Password));
         }
     }
 }

@@ -54,7 +54,6 @@
     <Compile Include="DbContexts\UserContext.cs" />
     <Compile Include="Entities\Friendship.cs" />
     <Compile Include="Entities\Message.cs" />
-    <Compile Include="Entities\Session.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

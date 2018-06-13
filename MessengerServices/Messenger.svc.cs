@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Runtime.Serialization;
+using System.Security.Claims;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
@@ -14,24 +17,37 @@ using MessengerServiceData.Entities;
 using MessengerServices.Core;
 using MessengerServices.Managers;
 using System.Security.Cryptography;
+using System.Security.Permissions;
+using CommonLibrary.Security;
 using Aes = CommonLibrary.Security.Aes;
 
 namespace MessengerServices
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
     public class MessengerService : IMessenger
     {
         private IPasswordHasher _passwordHasher;
         private IRequestHelper _requestHelper;
+        private IAuthorizationManager _authorizationManager;
         private Aes _aes;
+        private Rsa _rsa;
 
         public MessengerService()
         {
             _passwordHasher = new PasswordHasher();
             _requestHelper = new RequestHelper();
+            _authorizationManager = new AuthorizationManager();
             _aes = new Aes();
-            _aes.SetAesKey(SessionManager.GetKeyForCurrentClient());
+            _rsa = new Rsa();
+            ImportRsaKey();
+            if (_requestHelper.GetCurrentSession() != null)
+            {
+                _aes.SetAesKey(_requestHelper.GetCurrentSession().AesKey);
+            }
+
+            if(MemoryCache.Default.Contains(_requestHelper.GetClientIp()))
+            {
+                _aes.SetAesKey(MemoryCache.Default.Get(_requestHelper.GetClientIp()) as byte[]);
+            }
         }
 
         public bool FriendUser(int idFirst, int idSecond)
@@ -57,45 +73,43 @@ namespace MessengerServices
             }
         }
 
-        public bool Login(string username, string password, byte[] iv)
+        public string Login(string username, string password, byte[] iv)
         {
-            _aes.Decrypt(iv, username, password);
-            password = _passwordHasher.HashPassword(password);
+            var arr = _aes.Decrypt(iv, username, password);
+            username = arr[0];
+            password = arr[1];
+
             using (var db = new UserContext())
             {
-                var user = db.Users.FirstOrDefault(x => x.Username == username && x.PasswordHash == password);
+                var user = db.Users.FirstOrDefault(x => x.Username == username);
+
                 if (user == null)
-                    return false;
-                db.Sessions.Add(new Session()
-                {
-                    Holder = user,
-                    Ip = _requestHelper.GetClientIp(),
-                    Key = SessionManager.PopKeyForCurrentClient()
-                });
-                return true;
+                    throw new Exception("Wrong username or password");
+
+                if (!_passwordHasher.VerifyPassword(password, user.PasswordHash))
+                    throw new Exception("Wrong username or password");
+
+                if (!MemoryCache.Default.Contains(_requestHelper.GetClientIp()))
+                    throw new Exception("Your session has been expired");
+
+                byte[] aesKey = MemoryCache.Default.Remove(_requestHelper.GetClientIp()) as byte[];
+                return _authorizationManager.GetUniqueAuthorizationToken(user, aesKey);
             }
         }
 
-        public byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus)
+        public void SetEncryptedSessionKey(byte[] encryptedKey)
         {
-            var rsa = new RSACryptoServiceProvider(2376);
-            rsa.ImportParameters(new RSAParameters()
-            {
-                Exponent = exponent,
-                Modulus = modulus
-            });
+            var key = _rsa.Decrypt(encryptedKey);
 
-            using (var rng = new RNGCryptoServiceProvider())
+            if (key.Length != 32)
             {
-                var sessionKey = new byte[32];
-                rng.GetBytes(sessionKey);
-                var encryptedKey = rsa.Encrypt(sessionKey, false);
-                SessionManager.AddKeyForCurrentClient(sessionKey);
-                return encryptedKey;
+                throw new Exception("Key's length isn't 256 bit");
             }
+
+            MemoryCache.Default.Add(_requestHelper.GetClientIp(), key, DateTime.Now.AddMinutes(5));
         }
 
-        public bool RegisterUser(string name, string username, string password, string email, byte[] iv)
+        public string RegisterUser(string name, string username, string password, string email, byte[] iv)
         {
             var arr = _aes.Decrypt(iv, name, username, password, email);
             name = arr[0];
@@ -103,7 +117,7 @@ namespace MessengerServices
             password = arr[2];
             email = arr[3];
             if (!IsUniqueEmailAndUsername(email, username))
-                return false;
+                return null;
 
             using (var db = new UserContext())
             {
@@ -115,16 +129,12 @@ namespace MessengerServices
                     PasswordHash = _passwordHasher.HashPassword(password),
                     Name = name
                 });
-                var session = db.Sessions.Add(new Session()
-                {
-                    Holder = user,
-                    Ip = _requestHelper.GetClientIp(),
-                    Key = SessionManager.PopKeyForCurrentClient(),
-                });
-                db.SaveChanges();
-            }
 
-            return true;
+                db.SaveChanges();
+
+                byte[] aesKey = MemoryCache.Default.Remove(_requestHelper.GetClientIp()) as byte[];
+                return _authorizationManager.GetUniqueAuthorizationToken(user, aesKey);
+            }
         }
 
         private bool IsUniqueEmailAndUsername(string email, string username)
@@ -133,6 +143,11 @@ namespace MessengerServices
             {
                 return null == db.Users.FirstOrDefault(x => x.Email == email || x.Username == username);
             }
+        }
+
+        private void ImportRsaKey()
+        {
+            _rsa.SetKey(ConfigurationManager.AppSettings["RsaXmlPrivateKey"]);
         }
     }
 }

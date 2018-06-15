@@ -4,6 +4,7 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:50548/Messenger.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:50548/Messenger.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:50548/Messenger.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/CommonLibrary" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IMessenger_SetEncryptedSessionKey_InputMessage">
@@ -18,23 +19,41 @@
   <wsdl:message name="IMessenger_RegisterUser_OutputMessage">
     <wsdl:part name="parameters" element="tns:RegisterUserResponse" />
   </wsdl:message>
-  <wsdl:message name="IMessenger_FriendUser_InputMessage">
-    <wsdl:part name="parameters" element="tns:FriendUser" />
+  <wsdl:message name="IMessenger_Login_InputMessage">
+    <wsdl:part name="parameters" element="tns:Login" />
   </wsdl:message>
-  <wsdl:message name="IMessenger_FriendUser_OutputMessage">
-    <wsdl:part name="parameters" element="tns:FriendUserResponse" />
+  <wsdl:message name="IMessenger_Login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_WriteMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:WriteMessage" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_WriteMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WriteMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetAllMessages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllMessages" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetAllMessages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllMessagesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetPossibleUsers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPossibleUsers" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetPossibleUsers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPossibleUsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetNewMessages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNewMessages" />
+  </wsdl:message>
+  <wsdl:message name="IMessenger_GetNewMessages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNewMessagesResponse" />
   </wsdl:message>
   <wsdl:message name="IMessenger_IsUniqueUsername_InputMessage">
     <wsdl:part name="parameters" element="tns:IsUniqueUsername" />
   </wsdl:message>
   <wsdl:message name="IMessenger_IsUniqueUsername_OutputMessage">
     <wsdl:part name="parameters" element="tns:IsUniqueUsernameResponse" />
-  </wsdl:message>
-  <wsdl:message name="IMessenger_Login_InputMessage">
-    <wsdl:part name="parameters" element="tns:Login" />
-  </wsdl:message>
-  <wsdl:message name="IMessenger_Login_OutputMessage">
-    <wsdl:part name="parameters" element="tns:LoginResponse" />
   </wsdl:message>
   <wsdl:portType name="IMessenger">
     <wsdl:operation name="SetEncryptedSessionKey">
@@ -45,17 +64,29 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/RegisterUser" message="tns:IMessenger_RegisterUser_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/RegisterUserResponse" message="tns:IMessenger_RegisterUser_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="FriendUser">
-      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/FriendUser" message="tns:IMessenger_FriendUser_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/FriendUserResponse" message="tns:IMessenger_FriendUser_OutputMessage" />
+    <wsdl:operation name="Login">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/Login" message="tns:IMessenger_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/LoginResponse" message="tns:IMessenger_Login_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WriteMessage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/WriteMessage" message="tns:IMessenger_WriteMessage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/WriteMessageResponse" message="tns:IMessenger_WriteMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMessages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/GetAllMessages" message="tns:IMessenger_GetAllMessages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/GetAllMessagesResponse" message="tns:IMessenger_GetAllMessages_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPossibleUsers">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/GetPossibleUsers" message="tns:IMessenger_GetPossibleUsers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/GetPossibleUsersResponse" message="tns:IMessenger_GetPossibleUsers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNewMessages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/GetNewMessages" message="tns:IMessenger_GetNewMessages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/GetNewMessagesResponse" message="tns:IMessenger_GetNewMessages_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="IsUniqueUsername">
       <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/IsUniqueUsername" message="tns:IMessenger_IsUniqueUsername_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/IsUniqueUsernameResponse" message="tns:IMessenger_IsUniqueUsername_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="Login">
-      <wsdl:input wsaw:Action="http://tempuri.org/IMessenger/Login" message="tns:IMessenger_Login_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IMessenger/LoginResponse" message="tns:IMessenger_Login_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="httpEndPoint" type="tns:IMessenger">
@@ -78,8 +109,44 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="FriendUser">
-      <soap:operation soapAction="http://tempuri.org/IMessenger/FriendUser" style="document" />
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://tempuri.org/IMessenger/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WriteMessage">
+      <soap:operation soapAction="http://tempuri.org/IMessenger/WriteMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllMessages">
+      <soap:operation soapAction="http://tempuri.org/IMessenger/GetAllMessages" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPossibleUsers">
+      <soap:operation soapAction="http://tempuri.org/IMessenger/GetPossibleUsers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNewMessages">
+      <soap:operation soapAction="http://tempuri.org/IMessenger/GetNewMessages" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -89,15 +156,6 @@
     </wsdl:operation>
     <wsdl:operation name="IsUniqueUsername">
       <soap:operation soapAction="http://tempuri.org/IMessenger/IsUniqueUsername" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="Login">
-      <soap:operation soapAction="http://tempuri.org/IMessenger/Login" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

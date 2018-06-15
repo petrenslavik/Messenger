@@ -2,22 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Runtime.Serialization;
-using System.Security.Claims;
-using System.ServiceModel;
-using System.ServiceModel.Web;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI;
 using MessengerServiceData.DbContexts;
 using MessengerServiceData.Entities;
 using MessengerServices.Core;
 using MessengerServices.Managers;
-using System.Security.Cryptography;
-using System.Security.Permissions;
+using CommonLibrary;
 using CommonLibrary.Security;
 using Aes = CommonLibrary.Security.Aes;
 
@@ -30,6 +21,7 @@ namespace MessengerServices
         private IAuthorizationManager _authorizationManager;
         private Aes _aes;
         private Rsa _rsa;
+        private Session _session;
 
         public MessengerService()
         {
@@ -38,30 +30,127 @@ namespace MessengerServices
             _authorizationManager = new AuthorizationManager();
             _aes = new Aes();
             _rsa = new Rsa();
+            _session = _requestHelper.GetCurrentSession();
             ImportRsaKey();
-            if (_requestHelper.GetCurrentSession() != null)
+            if (_session != null)
             {
                 _aes.SetAesKey(_requestHelper.GetCurrentSession().AesKey);
             }
-
-            if(MemoryCache.Default.Contains(_requestHelper.GetClientIp()))
+            else
             {
-                _aes.SetAesKey(MemoryCache.Default.Get(_requestHelper.GetClientIp()) as byte[]);
+                if (MemoryCache.Default.Contains(_requestHelper.GetClientIp()))
+                {
+                    _aes.SetAesKey(MemoryCache.Default.Get(_requestHelper.GetClientIp()) as byte[]);
+                }
             }
         }
 
-        public bool FriendUser(int idFirst, int idSecond)
+        public List<UserDTO> GetPossibleUsers(string str)
         {
             using (var db = new UserContext())
             {
-                var first = db.Users.Find(idFirst);
-                var second = db.Users.Find(idSecond);
-                var friendship = new Friendship { FirstUser = first, SecondUser = second, Status = 2 };
-                db.Friendships.Add(friendship);
-                db.SaveChanges();
+                return db.Users.Where(x => x.Username.StartsWith(str)).ToList()
+                    .Select(x => new UserDTO() {UserId = x.Id.ToString(), Username = x.Username, Name = x.Name})
+                    .ToList();
             }
+        }
 
-            return true;
+        public List<MessageDTO> GetNewMessages(DateTime updateDate)
+        {
+            if (_session == null)
+                return null;
+
+            using (var db = new UserContext())
+            {
+                var user = db.Users.First(x => x.Username == _session.User.Username);
+                var messages = db.Messages.Where(x => x.ReceiverId == user.Id && x.SendDate > updateDate).ToList();
+
+                return messages.Select(x=>new MessageDTO()
+                {
+                    Content = x.MessageText,
+                    Id = x.Id.ToString(),
+                    IsAuthor = false,
+                    Name = x.Sender.Name,
+                    SendDate = x.SendDate,
+                    UserId = x.SenderId.ToString(),
+                    Username = x.Sender.Username,
+                }).ToList();
+            }
+        }
+
+        public List<MessageDTO> GetAllMessages()
+        {
+            if (_session == null)
+                return null;
+
+            using (var db = new UserContext())
+            {
+                var user = db.Users.First(x => x.Username == _session.User.Username);
+                var messages = new List<MessageDTO>();
+
+                if (user.SentMessages.Count>0)
+                {
+                    messages.AddRange(user.SentMessages.Select(x => new MessageDTO()
+                    {
+                        Content = x.MessageText,
+                        Id = x.Id.ToString(),
+                        IsAuthor = true,
+                        Name = x.Receiver.Name,
+                        Username = x.Receiver.Username,
+                        UserId = x.Receiver.Id.ToString(),
+                        SendDate = x.SendDate,
+                    }));
+                }
+
+                if (user.ReceivedMessages.Count > 0)
+                {
+                    messages.AddRange(user.ReceivedMessages.Select(x => new MessageDTO()
+                    {
+                        Content = x.MessageText,
+                        Id = x.Id.ToString(),
+                        IsAuthor = false,
+                        Name = x.Sender.Name,
+                        Username = x.Sender.Username,
+                        UserId = x.Sender.Id.ToString(),
+                        SendDate = x.SendDate,
+                    }));
+                }
+
+                return messages;
+            }
+        }
+
+        public string WriteMessage(string receiverId, string content, byte[] iv)
+        {
+            if (_session == null)
+                return null;
+
+            var arr = _aes.Decrypt(iv, receiverId, content);
+            receiverId = arr[0];
+            content = arr[1];
+
+            int id = int.Parse(receiverId);
+
+            using (var db = new UserContext())
+            {
+                var receiver = db.Users.FirstOrDefault(x => x.Id == id);
+                var user = db.Users.First(x => x.Username == _session.User.Username);
+
+                if (receiver == null)
+                    return null;
+
+                var message = db.Messages.Add(new Message()
+                {
+                    Sender = user,
+                    MessageText = content,
+                    Receiver = receiver,
+                    SendDate = DateTime.Now,
+                });
+
+                db.SaveChanges();
+
+                return message.Id.ToString();
+            }
         }
 
         public bool IsUniqueUsername(string username)

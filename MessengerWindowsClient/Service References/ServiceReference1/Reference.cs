@@ -8,51 +8,69 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MessengerWindowsClient.Service_References.ServiceReference1 {
+namespace MessengerWindowsClient.ServiceReference1 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IMessenger")]
     public interface IMessenger {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/GetEncryptedSessionKeyResponse")]
-        byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/SetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/SetEncryptedSessionKeyResponse")]
+        void SetEncryptedSessionKey(byte[] EncryptedKey);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/GetEncryptedSessionKeyResponse")]
-        System.Threading.Tasks.Task<byte[]> GetEncryptedSessionKeyAsync(byte[] exponent, byte[] modulus);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
-        bool RegisterUser(string name, string username, string password, string email, byte[] iv);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/SetEncryptedSessionKey", ReplyAction="http://tempuri.org/IMessenger/SetEncryptedSessionKeyResponse")]
+        System.Threading.Tasks.Task SetEncryptedSessionKeyAsync(byte[] EncryptedKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
-        System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email, byte[] iv);
+        string RegisterUser(string name, string username, string password, string email, byte[] iv);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/FriendUser", ReplyAction="http://tempuri.org/IMessenger/FriendUserResponse")]
-        bool FriendUser(int idFirst, int idSecond);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/RegisterUser", ReplyAction="http://tempuri.org/IMessenger/RegisterUserResponse")]
+        System.Threading.Tasks.Task<string> RegisterUserAsync(string name, string username, string password, string email, byte[] iv);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/FriendUser", ReplyAction="http://tempuri.org/IMessenger/FriendUserResponse")]
-        System.Threading.Tasks.Task<bool> FriendUserAsync(int idFirst, int idSecond);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
+        string Login(string username, string password, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
+        System.Threading.Tasks.Task<string> LoginAsync(string username, string password, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/WriteMessage", ReplyAction="http://tempuri.org/IMessenger/WriteMessageResponse")]
+        string WriteMessage(string receiverId, string content, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/WriteMessage", ReplyAction="http://tempuri.org/IMessenger/WriteMessageResponse")]
+        System.Threading.Tasks.Task<string> WriteMessageAsync(string receiverId, string content, byte[] iv);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetAllMessages", ReplyAction="http://tempuri.org/IMessenger/GetAllMessagesResponse")]
+        CommonLibrary.MessageDTO[] GetAllMessages();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetAllMessages", ReplyAction="http://tempuri.org/IMessenger/GetAllMessagesResponse")]
+        System.Threading.Tasks.Task<CommonLibrary.MessageDTO[]> GetAllMessagesAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetPossibleUsers", ReplyAction="http://tempuri.org/IMessenger/GetPossibleUsersResponse")]
+        CommonLibrary.UserDTO[] GetPossibleUsers(string str);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetPossibleUsers", ReplyAction="http://tempuri.org/IMessenger/GetPossibleUsersResponse")]
+        System.Threading.Tasks.Task<CommonLibrary.UserDTO[]> GetPossibleUsersAsync(string str);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetNewMessages", ReplyAction="http://tempuri.org/IMessenger/GetNewMessagesResponse")]
+        CommonLibrary.MessageDTO[] GetNewMessages(System.DateTime updateDate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/GetNewMessages", ReplyAction="http://tempuri.org/IMessenger/GetNewMessagesResponse")]
+        System.Threading.Tasks.Task<CommonLibrary.MessageDTO[]> GetNewMessagesAsync(System.DateTime updateDate);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/IsUniqueUsername", ReplyAction="http://tempuri.org/IMessenger/IsUniqueUsernameResponse")]
         bool IsUniqueUsername(string username);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/IsUniqueUsername", ReplyAction="http://tempuri.org/IMessenger/IsUniqueUsernameResponse")]
         System.Threading.Tasks.Task<bool> IsUniqueUsernameAsync(string username);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
-        bool Login(string username, string password, byte[] iv);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMessenger/Login", ReplyAction="http://tempuri.org/IMessenger/LoginResponse")]
-        System.Threading.Tasks.Task<bool> LoginAsync(string username, string password, byte[] iv);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMessengerChannel : IMessenger, System.ServiceModel.IClientChannel {
+    public interface IMessengerChannel : MessengerWindowsClient.ServiceReference1.IMessenger, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MessengerClient : System.ServiceModel.ClientBase<IMessenger>, IMessenger {
+    public partial class MessengerClient : System.ServiceModel.ClientBase<MessengerWindowsClient.ServiceReference1.IMessenger>, MessengerWindowsClient.ServiceReference1.IMessenger {
         
         public MessengerClient() {
         }
@@ -73,28 +91,60 @@ namespace MessengerWindowsClient.Service_References.ServiceReference1 {
                 base(binding, remoteAddress) {
         }
         
-        public byte[] GetEncryptedSessionKey(byte[] exponent, byte[] modulus) {
-            return base.Channel.GetEncryptedSessionKey(exponent, modulus);
+        public void SetEncryptedSessionKey(byte[] EncryptedKey) {
+            base.Channel.SetEncryptedSessionKey(EncryptedKey);
         }
         
-        public System.Threading.Tasks.Task<byte[]> GetEncryptedSessionKeyAsync(byte[] exponent, byte[] modulus) {
-            return base.Channel.GetEncryptedSessionKeyAsync(exponent, modulus);
+        public System.Threading.Tasks.Task SetEncryptedSessionKeyAsync(byte[] EncryptedKey) {
+            return base.Channel.SetEncryptedSessionKeyAsync(EncryptedKey);
         }
         
-        public bool RegisterUser(string name, string username, string password, string email, byte[] iv) {
+        public string RegisterUser(string name, string username, string password, string email, byte[] iv) {
             return base.Channel.RegisterUser(name, username, password, email, iv);
         }
         
-        public System.Threading.Tasks.Task<bool> RegisterUserAsync(string name, string username, string password, string email, byte[] iv) {
+        public System.Threading.Tasks.Task<string> RegisterUserAsync(string name, string username, string password, string email, byte[] iv) {
             return base.Channel.RegisterUserAsync(name, username, password, email, iv);
         }
         
-        public bool FriendUser(int idFirst, int idSecond) {
-            return base.Channel.FriendUser(idFirst, idSecond);
+        public string Login(string username, string password, byte[] iv) {
+            return base.Channel.Login(username, password, iv);
         }
         
-        public System.Threading.Tasks.Task<bool> FriendUserAsync(int idFirst, int idSecond) {
-            return base.Channel.FriendUserAsync(idFirst, idSecond);
+        public System.Threading.Tasks.Task<string> LoginAsync(string username, string password, byte[] iv) {
+            return base.Channel.LoginAsync(username, password, iv);
+        }
+        
+        public string WriteMessage(string receiverId, string content, byte[] iv) {
+            return base.Channel.WriteMessage(receiverId, content, iv);
+        }
+        
+        public System.Threading.Tasks.Task<string> WriteMessageAsync(string receiverId, string content, byte[] iv) {
+            return base.Channel.WriteMessageAsync(receiverId, content, iv);
+        }
+        
+        public CommonLibrary.MessageDTO[] GetAllMessages() {
+            return base.Channel.GetAllMessages();
+        }
+        
+        public System.Threading.Tasks.Task<CommonLibrary.MessageDTO[]> GetAllMessagesAsync() {
+            return base.Channel.GetAllMessagesAsync();
+        }
+        
+        public CommonLibrary.UserDTO[] GetPossibleUsers(string str) {
+            return base.Channel.GetPossibleUsers(str);
+        }
+        
+        public System.Threading.Tasks.Task<CommonLibrary.UserDTO[]> GetPossibleUsersAsync(string str) {
+            return base.Channel.GetPossibleUsersAsync(str);
+        }
+        
+        public CommonLibrary.MessageDTO[] GetNewMessages(System.DateTime updateDate) {
+            return base.Channel.GetNewMessages(updateDate);
+        }
+        
+        public System.Threading.Tasks.Task<CommonLibrary.MessageDTO[]> GetNewMessagesAsync(System.DateTime updateDate) {
+            return base.Channel.GetNewMessagesAsync(updateDate);
         }
         
         public bool IsUniqueUsername(string username) {
@@ -103,14 +153,6 @@ namespace MessengerWindowsClient.Service_References.ServiceReference1 {
         
         public System.Threading.Tasks.Task<bool> IsUniqueUsernameAsync(string username) {
             return base.Channel.IsUniqueUsernameAsync(username);
-        }
-        
-        public bool Login(string username, string password, byte[] iv) {
-            return base.Channel.Login(username, password, iv);
-        }
-        
-        public System.Threading.Tasks.Task<bool> LoginAsync(string username, string password, byte[] iv) {
-            return base.Channel.LoginAsync(username, password, iv);
         }
     }
 }

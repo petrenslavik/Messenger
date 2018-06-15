@@ -69,6 +69,10 @@
     <Compile Include="Managers\ServiceInfrastructure\ClientMessageInspector.cs" />
     <Compile Include="Managers\ServiceInfrastructure\TokenBehaviorExtension.cs" />
     <Compile Include="Managers\ServiceInfrastructure\TokenEndpointBehavior.cs" />
+    <Compile Include="Models\Conversation.cs" />
+    <Compile Include="Models\INotifyBaseClass.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessengerViewModel.cs" />
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -149,6 +153,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\CommonLibrary.DTO.ConversationDTO.datasource" />
+    <None Include="Properties\DataSources\CommonLibrary.DTO.MessageDTO.datasource" />
+    <None Include="Properties\DataSources\CommonLibrary.MessageDTO.datasource" />
+    <None Include="Properties\DataSources\CommonLibrary.UserDTO.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -160,11 +168,17 @@
     <None Include="Service References\MessengerService\Messenger1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\MessengerService\Messenger2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\MessengerService\MessengerService.wsdl" />
     <None Include="Service References\ServiceReference1\Messenger.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ServiceReference1\Messenger1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference1\Messenger3.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ServiceReference1\MessengerService.wsdl" />

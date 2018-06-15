@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
-using System.Threading.Tasks;
-using MessengerServiceData.Entities;
+using CommonLibrary;
 
 namespace MessengerServices
 {
@@ -15,12 +15,21 @@ namespace MessengerServices
         string RegisterUser(string name, string username, string password, string email, byte[] iv);
 
         [OperationContract]
-        bool FriendUser(int idFirst, int idSecond);
+        string Login(string username, string password, byte[] iv);
+
+        [OperationContract]
+        string WriteMessage(string receiverId, string content, byte[] iv);
+
+        [OperationContract]
+        List<MessageDTO> GetAllMessages();
+
+        [OperationContract]
+        List<UserDTO> GetPossibleUsers(string str);
+
+        [OperationContract]
+        List<MessageDTO> GetNewMessages(DateTime updateDate);
 
         [OperationContract]
         bool IsUniqueUsername(string username);
-
-        [OperationContract]
-        string Login(string username, string password, byte[] iv);
     }
 }

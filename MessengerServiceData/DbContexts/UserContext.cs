@@ -8,10 +8,10 @@ using MessengerServiceData.Entities;
 
 namespace MessengerServiceData.DbContexts
 {
-    public class UserContext:DbContext
+    public class UserContext : DbContext
     {
         public UserContext()
-            :base("DbConnection")
+            : base("DbConnection")
         { }
 
         public DbSet<User> Users { get; set; }
@@ -20,10 +20,14 @@ namespace MessengerServiceData.DbContexts
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Message>().HasRequired(x => x.Receiver).WithOptional().Map(x => x.MapKey("ReceiverId")).WillCascadeOnDelete(false);
-            modelBuilder.Entity<Message>().HasRequired(x=>x.Sender).WithOptional().Map(x=>x.MapKey("SenderId")).WillCascadeOnDelete(false);
-            modelBuilder.Entity<Friendship>().HasRequired(x=>x.FirstUser).WithOptional().Map(x=>x.MapKey("FirstUserId")).WillCascadeOnDelete(false);
+            modelBuilder.Entity<User>().HasMany(x => x.SentMessages).WithRequired(x => x.Sender)
+                .HasForeignKey(x => x.SenderId).WillCascadeOnDelete(false);
+            modelBuilder.Entity<User>().HasMany(x => x.ReceivedMessages).WithRequired(x => x.Receiver)
+                .HasForeignKey(x => x.ReceiverId).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Friendship>().HasRequired(x => x.FirstUser).WithOptional().Map(x => x.MapKey("FirstUserId")).WillCascadeOnDelete(false);
             modelBuilder.Entity<Friendship>().HasRequired(x => x.SecondUser).WithOptional().Map(x => x.MapKey("SecondUserId")).WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Message>().HasKey(x => x.Id);
             modelBuilder.Entity<Friendship>().HasKey(x => x.Id);
             modelBuilder.Entity<User>().HasKey(x => x.Id);

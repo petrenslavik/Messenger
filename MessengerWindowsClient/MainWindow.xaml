@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:MessengerWindowsClient"
         xmlns:pages="clr-namespace:MessengerWindowsClient.Pages"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" Closed="Window_Closed">
+        Title="MainWindow" 
+        Height="{Binding SystemParameters.PrimaryHeight}" 
+        Width="{Binding SystemParameters.PrimaryScreenWidth}" 
+        Closed="Window_Closed" WindowStyle="ThreeDBorderWindow">
     <Window.Background>
         <ImageBrush ImageSource="Resources/background.jpg"></ImageBrush>
     </Window.Background>
     <Grid x:Name="Container" SizeChanged="Container_SizeChanged">
-        <pages:WelcomePage x:Name ="WelcomePage" Visibility="Visible" RegisterPage="{Binding ElementName=RegisterPage}" LoginPage="{Binding ElementName=LoginPage}"/>
+        <pages:WelcomePage x:Name ="WelcomePage" Visibility="Visible" RegisterPage="{Binding ElementName=RegisterPage}" LoginPage="{Binding ElementName=LoginPage}" BorderThickness="0"/>
         <pages:MessagesPage x:Name="MessagesPage" Visibility="Collapsed"/>
         <pages:LoginPage x:Name="LoginPage" Visibility="Collapsed" WelcomePage="{Binding ElementName=WelcomePage}"/>
         <pages:RegisterPage x:Name="RegisterPage" Visibility="Collapsed" WelcomePage="{Binding ElementName=WelcomePage}"/>

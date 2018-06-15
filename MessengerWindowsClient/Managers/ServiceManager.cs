@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using CommonLibrary;
 using CommonLibrary.Security;
-using MessengerWindowsClient.MessengerService;
+using MessengerWindowsClient.Models;
+using MessengerWindowsClient.ServiceReference1;
 using Aes = CommonLibrary.Security.Aes;
 
 namespace MessengerWindowsClient.Managers
@@ -18,30 +22,17 @@ namespace MessengerWindowsClient.Managers
         private Rsa _rsa;
         private Aes _aes;
 
-        private bool EasyCertCheck(object sender, X509Certificate cert,
-            X509Chain chain, System.Net.Security.SslPolicyErrors error)
-        {
-            return true;
-        }
-
         public ServiceManager()
         {
-            ServicePointManager.ServerCertificateValidationCallback += EasyCertCheck;
             _aes = new Aes();
             _rsa = new Rsa();
-
-            //_rsa.SetKey(new RSAParameters()
-            //{
-            //    Modulus = Convert.FromBase64String(ConfigurationManager.AppSettings["RsaModulus"]),
-            //    Exponent = Convert.FromBase64String(ConfigurationManager.AppSettings["RsaExponent"]),
-            //});
 
             _rsa.SetKey(ConfigurationManager.AppSettings["RsaXmlPublicKey"]);
 
             byte[] key;
             var encryptedKey = _rsa.GenerateNewAes256EncryptedKey(out key);
 
-            _client = new MessengerClient("httpEndPoint");
+            _client = new MessengerClient("httpEndPoint1");
             _client.SetEncryptedSessionKey(encryptedKey);
             _aes.SetAesKey(key);
         }
@@ -73,6 +64,31 @@ namespace MessengerWindowsClient.Managers
 
             await _client.IsUniqueUsernameAsync(username);
             return true;
+        }
+
+        public async Task<List<MessageDTO>> GetConversations()
+        {
+            return (await _client.GetAllMessagesAsync()).ToList();
+        }
+
+        public async Task<string> WriteMessage(string content, string receiverId)
+        {
+            var iv = _aes.GenerateNewIv();
+
+            _aes.Encrypt(ref content);
+            _aes.Encrypt(ref receiverId);
+
+            return await _client.WriteMessageAsync(receiverId, content, iv);
+        }
+
+        public async Task<List<UserDTO>> GetPossibleUsers(string str)
+        {
+            return (await _client.GetPossibleUsersAsync(str)).ToList();
+        }
+
+        public async Task<List<MessageDTO>> GetNewMessages(DateTime date)
+        {
+            return (await _client.GetNewMessagesAsync(date)).ToList();
         }
 
         public void Dispose()

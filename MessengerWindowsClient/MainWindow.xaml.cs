@@ -18,6 +18,7 @@ namespace MessengerWindowsClient
             this.LoginPage.ChangePage += ChangePage;
             this.LoginPage.LoginReady += LoginUser;
             _serviceManager = new ServiceManager();
+            this.MessagesPage.ServiceManager = _serviceManager;
         }
 
         private void ChangePage(object sender, ChangePageEventArgs e)
@@ -54,7 +55,7 @@ namespace MessengerWindowsClient
 
         private void Container_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdateLayout();
+            //UpdateLayout();
         }
     }
 }

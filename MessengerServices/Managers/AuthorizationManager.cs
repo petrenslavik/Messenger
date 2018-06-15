@@ -48,7 +48,7 @@ namespace MessengerServices.Managers
             } while (MemoryCache.Default.Contains(guid));
 
             MemoryCache.Default.Set(guid, 
-                new Session {AesKey = aesKey, Username = user.Username},
+                new Session {AesKey = aesKey, User = user},
                 new CacheItemPolicy() {SlidingExpiration = TimeSpan.FromMinutes(10)}
                 );
 

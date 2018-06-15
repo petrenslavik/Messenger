@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="DbContexts\UserContext.cs" />
     <Compile Include="Entities\Friendship.cs" />
     <Compile Include="Entities\Message.cs" />

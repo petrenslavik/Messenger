@@ -26,6 +26,7 @@
     <MetadataFile FileName="Messenger.xsd" MetadataType="Schema" ID="bef1fd95-9f3c-46b9-bed2-b7c88024b02c" SourceId="1" SourceUrl="https://zstumessenger.azurewebsites.net/Messenger.svc?xsd=xsd0" />
     <MetadataFile FileName="Messenger1.xsd" MetadataType="Schema" ID="7c8570e8-d827-432f-b8f5-9c4379834282" SourceId="1" SourceUrl="https://zstumessenger.azurewebsites.net/Messenger.svc?xsd=xsd1" />
     <MetadataFile FileName="Messenger.disco" MetadataType="Disco" ID="49c0e9c0-f725-4866-9e16-1c3c5a8ab5f9" SourceId="1" SourceUrl="https://zstumessenger.azurewebsites.net/Messenger.svc?disco" />
+    <MetadataFile FileName="Messenger3.xsd" MetadataType="Schema" ID="a8ec645c-4893-402b-be26-45974a1354f2" SourceId="1" SourceUrl="https://zstumessenger.azurewebsites.net/Messenger.svc?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

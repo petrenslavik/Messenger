@@ -19,7 +19,6 @@ namespace MessengerServices
         private IPasswordHasher _passwordHasher;
         private IRequestHelper _requestHelper;
         private IAuthorizationManager _authorizationManager;
-        private Aes _aes;
         private Rsa _rsa;
         private Session _session;
 
@@ -28,21 +27,9 @@ namespace MessengerServices
             _passwordHasher = new PasswordHasher();
             _requestHelper = new RequestHelper();
             _authorizationManager = new AuthorizationManager();
-            _aes = new Aes();
             _rsa = new Rsa();
             _session = _requestHelper.GetCurrentSession();
             ImportRsaKey();
-            if (_session != null)
-            {
-                _aes.SetAesKey(_requestHelper.GetCurrentSession().AesKey);
-            }
-            else
-            {
-                if (MemoryCache.Default.Contains(_requestHelper.GetClientIp()))
-                {
-                    _aes.SetAesKey(MemoryCache.Default.Get(_requestHelper.GetClientIp()) as byte[]);
-                }
-            }
         }
 
         public List<UserDTO> GetPossibleUsers(string str)
@@ -120,14 +107,10 @@ namespace MessengerServices
             }
         }
 
-        public string WriteMessage(string receiverId, string content, byte[] iv)
+        public string WriteMessage(string receiverId, string content)
         {
             if (_session == null)
                 return null;
-
-            var arr = _aes.Decrypt(iv, receiverId, content);
-            receiverId = arr[0];
-            content = arr[1];
 
             int id = int.Parse(receiverId);
 
@@ -162,12 +145,8 @@ namespace MessengerServices
             }
         }
 
-        public string Login(string username, string password, byte[] iv)
+        public string Login(string username, string password)
         {
-            var arr = _aes.Decrypt(iv, username, password);
-            username = arr[0];
-            password = arr[1];
-
             using (var db = new UserContext())
             {
                 var user = db.Users.FirstOrDefault(x => x.Username == username);
@@ -198,13 +177,8 @@ namespace MessengerServices
             MemoryCache.Default.Add(_requestHelper.GetClientIp(), key, DateTime.Now.AddMinutes(5));
         }
 
-        public string RegisterUser(string name, string username, string password, string email, byte[] iv)
+        public string RegisterUser(string name, string username, string password, string email)
         {
-            var arr = _aes.Decrypt(iv, name, username, password, email);
-            name = arr[0];
-            username = arr[1];
-            password = arr[2];
-            email = arr[3];
             if (!IsUniqueEmailAndUsername(email, username))
                 return null;
 

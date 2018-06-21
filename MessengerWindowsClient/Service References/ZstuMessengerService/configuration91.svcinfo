@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="5JHwP/d8U91dyHu8wBEXnFVeM3I=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="HHB7T4p+e/dnQJSayDU7PhcN7hk=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="httpEndPoint1">
       <properties>
@@ -112,7 +112,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="httpEndPoint1" contract="ServiceReference1.IMessenger" bindingType="basicHttpBinding" address="http://zstumessenger.azurewebsites.net/Messenger.svc/http" bindingConfiguration="httpEndPoint1">
+    <endpoint name="httpEndPoint1" contract="ZstuMessengerService.IMessenger" bindingType="basicHttpBinding" address="http://zstumessenger.azurewebsites.net/Messenger.svc/http" bindingConfiguration="httpEndPoint1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://zstumessenger.azurewebsites.net/Messenger.svc/http</serializedValue>
@@ -127,7 +127,7 @@
           <serializedValue>httpEndPoint1</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>ServiceReference1.IMessenger</serializedValue>
+          <serializedValue>ZstuMessengerService.IMessenger</serializedValue>
         </property>
         <property path="/headers" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.AddressHeaderCollectionElement, System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.AddressHeaderCollectionElement</serializedValue>

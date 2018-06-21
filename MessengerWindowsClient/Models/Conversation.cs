@@ -16,6 +16,7 @@ namespace MessengerWindowsClient.Models
         private string _username;
         private Brush _brush;
         private bool _isActive;
+        private int _unreadMessages;
 
         public bool IsActive
         {
@@ -62,6 +63,12 @@ namespace MessengerWindowsClient.Models
         {
             get { return _messages; }
             set { SetField(ref _messages, value,""); }
+        }
+
+        public int UnreadMessages
+        {
+            get { return _unreadMessages; }
+            set { SetField(ref _unreadMessages, value, ""); }
         }
     }
 }

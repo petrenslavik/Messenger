@@ -27,11 +27,11 @@ namespace MessengerWindowsClient.Pages
     {
         public ServiceManager ServiceManager
         {
-            private get { return _serviceManager; }
+            get { return _serviceManager; }
             set
             {
                 _serviceManager = value;
-                _viewModel.ServiceManager = _serviceManager;
+                _viewModel.ServiceManager = value;
             }
         }
 
@@ -70,6 +70,12 @@ namespace MessengerWindowsClient.Pages
         {
             if (this.Visibility == Visibility.Visible)
                 _viewModel.LoadConversations();
+        }
+
+        private void MessageTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.CurrentConversation != null)
+                _viewModel.CurrentConversation.UnreadMessages = 0;
         }
     }
 }

@@ -6,10 +6,12 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using CommonLibrary;
 using CommonLibrary.Security;
 using MessengerWindowsClient.Models;
-using MessengerWindowsClient.ServiceReference1;
+using MessengerWindowsClient.MessengerService;
 using Aes = CommonLibrary.Security.Aes;
 
 namespace MessengerWindowsClient.Managers
@@ -17,78 +19,162 @@ namespace MessengerWindowsClient.Managers
     public class ServiceManager
     {
         public static string UniqueToken { get; private set; }
+        public bool IsConnected { get; set; }
+        public static Aes Aes { get; private set; }
 
         private MessengerClient _client;
         private Rsa _rsa;
         private Aes _aes;
+        private DispatcherTimer _timer;
 
         public ServiceManager()
         {
             _aes = new Aes();
             _rsa = new Rsa();
-
             _rsa.SetKey(ConfigurationManager.AppSettings["RsaXmlPublicKey"]);
+            var _timer = new DispatcherTimer();
+            _timer.Tick += Reconnect;
+            _timer.Interval = TimeSpan.FromSeconds(2);
+            _client = new MessengerClient();
+            Connect();
+        }
 
-            byte[] key;
-            var encryptedKey = _rsa.GenerateNewAes256EncryptedKey(out key);
+        private void Reconnect(object sender, EventArgs e)
+        {
+            Connect();
+            if(IsConnected)
+                _timer.Stop();
+        }
 
-            _client = new MessengerClient("httpEndPoint1");
-            _client.SetEncryptedSessionKey(encryptedKey);
-            _aes.SetAesKey(key);
+        private void Connect()
+        {
+            try
+            {
+                byte[] key;
+                var encryptedKey = _rsa.GenerateNewAes256EncryptedKey(out key);
+                _client.SetEncryptedSessionKey(encryptedKey);
+                _aes.SetAesKey(key);
+                Aes = _aes;
+                IsConnected = true;
+            }
+            catch
+            {
+                return;
+            }
         }
 
         public async Task<bool> RegisterUser(string name, string username, string password, string email)
         {
-            var iv = _aes.GenerateNewIv();
+            try
+            {
+                var token = await _client.RegisterUserAsync(name, username, password, email);
+                if (token == null)
+                    return false;
+                UniqueToken = token;
+                return true;
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
 
-            _aes.Encrypt(ref name);
-            _aes.Encrypt(ref username);
-            _aes.Encrypt(ref password);
-            _aes.Encrypt(ref email);
-
-            var token = await _client.RegisterUserAsync(name, username, password, email, iv);
-            UniqueToken = token;
-
-            return true;
+            return false;
         }
 
         public async Task<bool> Login(string username, string password)
         {
-            var iv = _aes.GenerateNewIv();
+            try
+            {
+                var token = await _client.LoginAsync(username, password);
+                if (token == null)
+                    return false;
+                UniqueToken = token;
+                return true;
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
 
-            _aes.Encrypt(ref username);
-            _aes.Encrypt(ref password);
-
-            var token = await _client.LoginAsync(username, password, iv);
-            UniqueToken = token;
-
-            await _client.IsUniqueUsernameAsync(username);
-            return true;
+            return false;
         }
 
-        public async Task<List<MessageDTO>> GetConversations()
+        public async Task<MessageDTO[]> GetConversations()
         {
-            return (await _client.GetAllMessagesAsync()).ToList();
+            try
+            {
+                var messages = await _client.GetAllMessagesAsync();
+                return messages;
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
+
+            return null;
         }
 
         public async Task<string> WriteMessage(string content, string receiverId)
         {
-            var iv = _aes.GenerateNewIv();
+            try
+            {
+                return await _client.WriteMessageAsync(receiverId, content);
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
 
-            _aes.Encrypt(ref content);
-            _aes.Encrypt(ref receiverId);
-
-            return await _client.WriteMessageAsync(receiverId, content, iv);
+            return null;
         }
 
         public async Task<List<UserDTO>> GetPossibleUsers(string str)
         {
-            return (await _client.GetPossibleUsersAsync(str)).ToList();
+            try
+            {
+                return _client.GetPossibleUsers(str).ToList();
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
+
+            return null;
         }
 
         public async Task<List<MessageDTO>> GetNewMessages(DateTime date)
         {
-            return (await _client.GetNewMessagesAsync(date)).ToList();
+            try
+            {
+                return (_client.GetNewMessages(date)).ToList();
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
+
+            return null;
+        }
+
+        public bool IsValidUsername(string username)
+        {
+            try
+            {
+                return _client.IsUniqueUsername(username);
+            }
+            catch
+            {
+                IsConnected = false;
+                _timer.Start();
+            }
+
+            return false;
         }
 
         public void Dispose()

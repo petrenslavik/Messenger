@@ -28,7 +28,7 @@ namespace MessengerWindowsClient.Models
         public ObservableCollection<Conversation> Conversations
         {
             get { return _conversations; }
-            set { SetField(ref _conversations, value,""); }
+            set { SetField(ref _conversations, value, ""); }
         }
 
         public Conversation CurrentConversation
@@ -36,16 +36,20 @@ namespace MessengerWindowsClient.Models
             get { return _currentConversation; }
             set
             {
-                _parent.MessagesListBox.ItemsSource = value.Messages;
+                if (value == null)
+                    return;
 
-                if (_tempList != null)
+                if (_canClear)
                 {
                     ClearSearchUsers();
                     _parent.ConversationsListBox.Items.Refresh();
                 }
 
-                SetField(ref _currentConversation, value,"");
-                _parent.MessagesListBox.ScrollIntoView(CurrentConversation.Messages[CurrentConversation.Messages.Count - 1]);
+                value.UnreadMessages = 0;
+                SetField(ref _currentConversation, value, "");
+                if (value.Messages.Count != 0)
+                    _parent.MessagesListBox.ScrollIntoView(
+                        value.Messages[CurrentConversation.Messages.Count - 1]);
             }
         }
 
@@ -59,86 +63,100 @@ namespace MessengerWindowsClient.Models
 
         public async void LoadConversations()
         {
+            
             var messages = await ServiceManager.GetConversations();
-            LoadMessages(messages);
-            _lastUpdate = DateTime.Now;
+            if (messages != null)
+            {
+                LoadMessages(messages.ToList(), false);
+                _lastUpdate = DateTime.Now;
+            }
 
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += UpdateMessages;
-            dispatcherTimer.Interval = TimeSpan.FromSeconds(1.5);
+            dispatcherTimer.Interval = TimeSpan.FromSeconds(2);
             dispatcherTimer.Start();
         }
 
         public async void AddMessage(string text)
         {
-            var reference = CurrentConversation;
-            var id = await ServiceManager.WriteMessage(text, reference.InterlocutorId);
-            if (id != null)
+            if (ServiceManager.IsConnected)
             {
-                if (!Conversations.Contains(reference))
+                var reference = CurrentConversation;
+                var id = await ServiceManager.WriteMessage(text, reference.InterlocutorId);
+                if (id != null)
                 {
-                    Conversations.Insert(0, reference);
-                }
-                else
-                {
-                    Conversations.Move(Conversations.IndexOf(reference), 0);
+                    if (!Conversations.Contains(reference))
+                    {
+                        Conversations.Insert(0, reference);
+                    }
+                    else
+                    {
+                        Conversations.Move(Conversations.IndexOf(reference), 0);
+                    }
+
+                    reference.Messages.Add(new Message()
+                    {
+                        Content = text,
+                        IsAuthor = true,
+                        Id = id
+                    });
                 }
 
-                reference.Messages.Add(new Message()
-                {
-                    Content = text,
-                    IsAuthor = true,
-                    Id = id
-                });
+                _parent.MessagesListBox.ScrollIntoView(
+                    reference.Messages[reference.Messages.Count - 1]);
             }
-            _parent.MessagesListBox.ScrollIntoView(CurrentConversation.Messages[CurrentConversation.Messages.Count - 1]);
         }
 
         public async void SearchPossibleUsers(string text)
         {
-            if (_isSearching)
-                return;
-            _isSearching = true;
-            ClearSearchUsers();
-            _canClear = false;
-
-            var temp = new List<Conversation>();
-            var possibleUsers = await ServiceManager.GetPossibleUsers(text);
-
-            if (string.IsNullOrEmpty(_parent.SearchTextBox.Text))
+            if (ServiceManager.IsConnected)
             {
-                _isSearching = false;
-                return;
-            }
 
-            foreach (var conversation in Conversations)
-            {
-                conversation.IsActive = conversation.Username.StartsWith(text);
-            }
+                if (_isSearching)
+                    return;
+                _isSearching = true;
+                ClearSearchUsers();
+                _canClear = false;
 
-            foreach (var user in possibleUsers)
-            {
-                if (Conversations.All(x => x.Username != user.Username))
+                var temp = new List<Conversation>();
+                var possibleUsers = await ServiceManager.GetPossibleUsers(text);
+
+                if (string.IsNullOrEmpty(_parent.SearchTextBox.Text))
                 {
-                    var conversation = new Conversation()
-                    {
-                        InterlocutorId = user.UserId,
-                        Name = user.Name,
-                        Username = user.Username,
-                        Messages = new ObservableCollection<Message>(),
-                        IsActive = true,
-                        Color = new SolidColorBrush(Color.FromRgb((byte)_random.Next(30, 255),
-                            (byte)_random.Next(30, 255), (byte)_random.Next(30, 255))),
-                    };
-
-                    Conversations.Add(conversation);
-                    temp.Add(conversation);
+                    _isSearching = false;
+                    return;
                 }
+
+                foreach (var conversation in Conversations)
+                {
+                    conversation.IsActive = conversation.Username.StartsWith(text);
+                }
+
+                foreach (var user in possibleUsers)
+                {
+                    if (Conversations.All(x => x.Username != user.Username))
+                    {
+                        var conversation = new Conversation()
+                        {
+                            InterlocutorId = user.UserId,
+                            Name = user.Name,
+                            Username = user.Username,
+                            Messages = new ObservableCollection<Message>(),
+                            IsActive = true,
+                            Color = new SolidColorBrush(Color.FromRgb((byte) _random.Next(30, 255),
+                                (byte) _random.Next(30, 255), (byte) _random.Next(30, 255))),
+                        };
+
+                        Conversations.Add(conversation);
+                        temp.Add(conversation);
+                    }
+                }
+
+                _tempList = temp;
+                _parent.ConversationsListBox.Items.Refresh();
+                _canClear = true;
+                _isSearching = false;
             }
-            _tempList = temp;
-            _parent.ConversationsListBox.Items.Refresh();
-            _canClear = true;
-            _isSearching = false;
         }
 
         public void ClearSearchUsers()
@@ -163,12 +181,20 @@ namespace MessengerWindowsClient.Models
 
         private async void UpdateMessages(object sender, EventArgs eventArgs)
         {
-            var messages = await ServiceManager.GetNewMessages(_lastUpdate);
-            LoadMessages(messages);
-            _lastUpdate = DateTime.Now;
+            try
+            {
+                var messages = await ServiceManager.GetNewMessages(_lastUpdate);
+                if (messages != null)
+                    LoadMessages(messages, true);
+                _lastUpdate = DateTime.Now;
+            }
+            catch
+            {
+                return;
+            }
         }
 
-        private void LoadMessages(List<MessageDTO> messages)
+        private void LoadMessages(List<MessageDTO> messages, bool newMessages)
         {
             messages.Sort((x, y) => x.SendDate.CompareTo(y.SendDate));
             foreach (var message in messages)
@@ -182,9 +208,12 @@ namespace MessengerWindowsClient.Models
                         Username = message.Username,
                         Messages = new ObservableCollection<Message>(),
                         IsActive = true,
-                        Color = new SolidColorBrush(Color.FromRgb((byte)_random.Next(30, 255),
-                            (byte)_random.Next(30, 255), (byte)_random.Next(30, 255))),
+                        Color = new SolidColorBrush(Color.FromRgb((byte) _random.Next(30, 255),
+                            (byte) _random.Next(30, 255), (byte) _random.Next(30, 255))),
                     };
+
+                    if (newMessages)
+                        conversation.UnreadMessages++;
 
                     conversation.Messages.Add(new Message()
                     {
@@ -206,10 +235,14 @@ namespace MessengerWindowsClient.Models
                             Id = message.Id,
                             IsAuthor = message.IsAuthor
                         });
+
+                        if (newMessages)
+                            conversation.UnreadMessages++;
                     }
                 }
+
+                _parent.MessagesListBox.Items.Refresh();
             }
-            _parent.MessagesListBox.Items.Refresh();
         }
     }
 }

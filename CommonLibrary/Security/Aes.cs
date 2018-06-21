@@ -11,11 +11,10 @@ namespace CommonLibrary.Security
 {
     public class Aes
     {
-        private System.Security.Cryptography.Aes _aes = System.Security.Cryptography.Aes.Create();
+        private AesCryptoServiceProvider _aes = new AesCryptoServiceProvider();
 
         public Aes()
         {
-            _aes.KeySize = 256;
             _aes.Padding = PaddingMode.PKCS7;
         }
 
@@ -43,6 +42,13 @@ namespace CommonLibrary.Security
             _aes.Key = key;
         }
 
+        public void SetAesIv(byte[] iv)
+        {
+            if (iv == null || iv.Length == 0)
+                return;
+            _aes.IV = iv;
+        }
+
         public string Encrypt(string methodParameter)
         {
             if (_aes.Key == null)
@@ -56,8 +62,10 @@ namespace CommonLibrary.Security
                         using (var streamWriter = new StreamWriter(csEncrypt) { AutoFlush = true })
                         {
                             streamWriter.Write(methodParameter);
+                            csEncrypt.FlushFinalBlock();
                         }
-
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
                         return Convert.ToBase64String(targetStream.ToArray());
                     }
                 }
@@ -74,12 +82,34 @@ namespace CommonLibrary.Security
                 {
                     using (var csEncrypt = new CryptoStream(targetStream, encryptor, CryptoStreamMode.Write))
                     {
-                        using (var streamWriter = new StreamWriter(csEncrypt) { AutoFlush = true })
+                        using (var streamWriter = new StreamWriter(csEncrypt))
                         {
                             streamWriter.Write(methodParameter);
+                            streamWriter.Flush();
+                            csEncrypt.FlushFinalBlock();
                         }
 
                         methodParameter = Convert.ToBase64String(targetStream.ToArray());
+                    }
+                }
+            }
+        }
+
+        public string Decrypt(string methodParameters)
+        {
+            if (_aes.Key == null)
+                throw new Exception("Key is null");
+
+            using (var decryptor = _aes.CreateDecryptor())
+            {
+                using (var encryptedStream = new MemoryStream(Convert.FromBase64String(methodParameters)))
+                {
+                    using (var csEncrypt = new CryptoStream(encryptedStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var streamReader = new StreamReader(csEncrypt))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -105,6 +135,8 @@ namespace CommonLibrary.Security
                         }
                     }
                 }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
 
             return methodParameters;

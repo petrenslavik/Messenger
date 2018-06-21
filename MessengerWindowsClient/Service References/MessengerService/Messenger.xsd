@@ -4,7 +4,7 @@
   <xs:element name="SetEncryptedSessionKey">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="EncryptedKey" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="encryptedKey" nillable="true" type="xs:base64Binary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -20,7 +20,6 @@
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="iv" nillable="true" type="xs:base64Binary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -36,7 +35,6 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="iv" nillable="true" type="xs:base64Binary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -52,7 +50,6 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="receiverId" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="content" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="iv" nillable="true" type="xs:base64Binary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

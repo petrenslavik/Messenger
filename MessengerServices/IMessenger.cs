@@ -9,16 +9,16 @@ namespace MessengerServices
     public interface IMessenger
     {
         [OperationContract]
-        void SetEncryptedSessionKey(byte[] EncryptedKey);
+        void SetEncryptedSessionKey(byte[] encryptedKey);
 
         [OperationContract]
-        string RegisterUser(string name, string username, string password, string email, byte[] iv);
+        string RegisterUser(string name, string username, string password, string email);
 
         [OperationContract]
-        string Login(string username, string password, byte[] iv);
+        string Login(string username, string password);
 
         [OperationContract]
-        string WriteMessage(string receiverId, string content, byte[] iv);
+        string WriteMessage(string receiverId, string content);
 
         [OperationContract]
         List<MessageDTO> GetAllMessages();

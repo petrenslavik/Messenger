@@ -5,15 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerWindowsClient"
         xmlns:pages="clr-namespace:MessengerWindowsClient.Pages"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" 
-        Height="{Binding SystemParameters.PrimaryHeight}" 
-        Width="{Binding SystemParameters.PrimaryScreenWidth}" 
+        Title="Messenger"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         Closed="Window_Closed" WindowStyle="ThreeDBorderWindow">
-    <Window.Background>
-        <ImageBrush ImageSource="Resources/background.jpg"></ImageBrush>
-    </Window.Background>
-    <Grid x:Name="Container" SizeChanged="Container_SizeChanged">
+    <Grid x:Name="Container">
         <pages:WelcomePage x:Name ="WelcomePage" Visibility="Visible" RegisterPage="{Binding ElementName=RegisterPage}" LoginPage="{Binding ElementName=LoginPage}" BorderThickness="0"/>
         <pages:MessagesPage x:Name="MessagesPage" Visibility="Collapsed"/>
         <pages:LoginPage x:Name="LoginPage" Visibility="Collapsed" WelcomePage="{Binding ElementName=WelcomePage}"/>

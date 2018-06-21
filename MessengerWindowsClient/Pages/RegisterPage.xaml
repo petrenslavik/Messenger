@@ -4,32 +4,74 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MessengerWindowsClient.Pages"
-             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:assitants="clr-namespace:MessengerWindowsClient"
+             mc:Ignorable="d"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             Background="{DynamicResource MaterialDesignPaper}"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             FontFamily="{DynamicResource MaterialDesignFont}"
              d:DesignHeight="600" d:DesignWidth="800">
-    <UserControl.Resources>
-        <ResourceDictionary Source="../Styles/PageStyle.xaml"></ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*" MinHeight="300"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Image x:Name="BackButton" Style="{StaticResource BackButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" MouseLeftButtonDown="BackButton_OnMouseLeftButtonDown"></Image>
-        <Label x:Name="Title" Content="Registration" Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
-        <Label x:Name="NameLabel" Content="Name:" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,63.5" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right"></Label>
-        <Label x:Name="UsernameLabel" Content="Username:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,33.5" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Right"></Label>
-        <Label Grid.Row="0" Grid.Column="0" x:Name="EmailLabel" Content="Email:" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="5" Margin="0,0,0,2.5"></Label>
-        <Label x:Name="PasswordLabel" Content="Password:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,2.5,0,0"/>
-        <Label x:Name="PasswordRepeatLabel" Content="Confirm password:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,33.5,0,0"/>
-        <TextBox x:Name="NameTextBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="0,0,0,63.5" Padding="4" Height="26"/>
-        <TextBox x:Name="UsernameTextBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="0,0,0,33.5" Padding="4" Height="26"/>
-        <TextBox x:Name="EmailTextBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="0,0,0,2.5" Padding="4" Height="26"/>
-        <PasswordBox x:Name="PasswordTextBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Padding="4" Margin="0,2.5,0,0"/>
-        <PasswordBox x:Name="PasswordRepeatTextBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Padding="4" Margin="0,33.5,0,0"/>
-        <Button x:Name="RegisterButton" Content="Register" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="RegisterButton_Click"/>
+        <Button Style="{StaticResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Left" Foreground="Red" Width="48" Height="48" VerticalAlignment="Top" Margin="10" Click="BackButton_OnMouseLeftButtonDown">
+            <Canvas Width="24" Height="24">
+                <Path Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" Fill="Black" />
+            </Canvas>
+        </Button>
+        <TextBlock x:Name="Title" Text="Registration" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="26"/>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="NameTextBox" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" materialDesign:HintAssist.Hint="Name" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <TextBox.Text>
+                    <Binding Path="Name">
+                        <Binding.ValidationRules>
+                            <DataErrorValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBox x:Name="UsernameTextBox" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" materialDesign:HintAssist.Hint="Username" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <TextBox.Text>
+                    <Binding Path="Username">
+                        <Binding.ValidationRules>
+                            <DataErrorValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBox x:Name="EmailTextBox" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" materialDesign:HintAssist.Hint="Email" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <TextBox.Text>
+                    <Binding Path="Email">
+                        <Binding.ValidationRules>
+                            <DataErrorValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <PasswordBox x:Name="PasswordTextBox" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" materialDesign:HintAssist.Hint="Password" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" assitants:PasswordBoxAssistant.BindPassword="True" assitants:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
+            <PasswordBox x:Name="PasswordRepeatTextBox" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" materialDesign:HintAssist.Hint="Confirm password" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" assitants:PasswordBoxAssistant.BindPassword="True" assitants:PasswordBoxAssistant.BoundPassword="{Binding Path=RepeatPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
+        </Grid>
+        <Grid Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="RegisterButton" Content="Register" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="RegisterButton_Click"/>
+            <TextBlock x:Name="ValidationText" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden" Foreground="Red"/>
+        </Grid>
     </Grid>
 </UserControl>

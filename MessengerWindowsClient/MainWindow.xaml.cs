@@ -19,6 +19,7 @@ namespace MessengerWindowsClient
             this.LoginPage.LoginReady += LoginUser;
             _serviceManager = new ServiceManager();
             this.MessagesPage.ServiceManager = _serviceManager;
+            this.RegisterPage.ServiceManager = _serviceManager;
         }
 
         private void ChangePage(object sender, ChangePageEventArgs e)
@@ -26,10 +27,10 @@ namespace MessengerWindowsClient
             switch (e.Direction)
             {
                 case ChangePageDirection.Forward:
-                    AnimationManager.AnimateForwardPage(e.NewPage, e.OldPage, Container, this.ActualWidth);
+                    AnimationManager.AnimateForwardPage(e.NewPage, e.OldPage, Container, this.ActualWidth-20);
                     break;
                 case ChangePageDirection.Backward:
-                    AnimationManager.AnimateBackwardPage(e.NewPage, e.OldPage, Container, this.ActualWidth);
+                    AnimationManager.AnimateBackwardPage(e.NewPage, e.OldPage, Container, this.ActualWidth-20);
                     break;
             }
         }
@@ -39,6 +40,11 @@ namespace MessengerWindowsClient
             var isSucceed = await _serviceManager.RegisterUser(e.Name, e.Username, e.Password, e.Email);
             if (isSucceed)
                 AnimationManager.AnimateForwardPage(MessagesPage, RegisterPage, Container, this.ActualWidth);
+            else
+            {
+                RegisterPage.ValidationText.Text = "Wrong data or no connection.";
+                RegisterPage.ValidationText.Visibility = Visibility.Visible;
+            }
         }
 
         private async void LoginUser(object sender, LoginEventArgs e)
@@ -46,16 +52,16 @@ namespace MessengerWindowsClient
             var isSucceed = await _serviceManager.Login(e.Username, e.Password);
             if (isSucceed)
                 AnimationManager.AnimateForwardPage(MessagesPage, LoginPage, Container, this.ActualWidth);
+            else
+            {
+                RegisterPage.ValidationText.Text = "Wrong credentials or no connection.";
+                RegisterPage.ValidationText.Visibility = Visibility.Visible;
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             _serviceManager.Dispose();
-        }
-
-        private void Container_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            //UpdateLayout();
         }
     }
 }

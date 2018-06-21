@@ -28,13 +28,19 @@ namespace MessengerWindowsClient.Pages
             InitializeComponent();
         }
 
-        private void BackButton_OnMouseLeftButtonDown_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void BackButton_OnMouseLeftButtonDown(object sender, RoutedEventArgs routedEventArgs)
         {
             ChangePage(this, new ChangePageEventArgs(WelcomePage, this, ChangePageDirection.Backward));
         }
 
-        private void LoginButton_OnClick_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(UsernameTextBox.Text) || string.IsNullOrEmpty(PasswordTextBox.Password))
+            {
+                ValidationText.Visibility = Visibility.Visible;
+                ValidationText.Text = "Please fill all fields.";
+                return;
+            }
             LoginReady(this, new LoginEventArgs(UsernameTextBox.Text, PasswordTextBox.Password));
         }
     }

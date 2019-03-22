@@ -1,32 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MessengerWindowsClient.Events;
+﻿using MessengerWindowsClient.Events;
 using MessengerWindowsClient.Managers;
 using MessengerWindowsClient.Models;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace MessengerWindowsClient.Pages
 {
     /// <summary>
     /// Interaction logic for RegisterPage.xaml
     /// </summary>
+    [Page("Register")]
     public partial class RegisterPage : UserControl
     {
         public ServiceManager ServiceManager
         {
             get { return _serviceManager; }
-            set { _serviceManager = value;
+            set
+            {
+                _serviceManager = value;
                 model.ServiceManager = value;
             }
         }
@@ -41,17 +32,7 @@ namespace MessengerWindowsClient.Pages
             this.DataContext = model;
         }
 
-        public event ChangePageEvent ChangePage;
         public event RegisterEvent RegisterReady;
-
-        public Control WelcomePage
-        {
-            get { return (Control)this.GetValue(WelcomePageProperty); }
-            set { this.SetValue(WelcomePageProperty, value); }
-        }
-
-        public static readonly DependencyProperty WelcomePageProperty = DependencyProperty.Register(
-            "WelcomePage", typeof(Control), typeof(RegisterPage), new PropertyMetadata(null));
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
@@ -64,16 +45,30 @@ namespace MessengerWindowsClient.Pages
                 return;
             }
 
-            if(CheckError(model["Name"]))
+            if (CheckError(model["Name"]))
+            {
                 return;
+            }
+
             if (CheckError(model["Username"]))
+            {
                 return;
+            }
+
             if (CheckError(model["Email"]))
+            {
                 return;
+            }
+
             if (CheckError(model["Password"]))
+            {
                 return;
+            }
+
             if (CheckError(model["RepeatPassword"]))
+            {
                 return;
+            }
 
             var name = model.Name;
             var username = model.Username;
@@ -84,7 +79,7 @@ namespace MessengerWindowsClient.Pages
 
         private void BackButton_OnMouseLeftButtonDown(object sender, RoutedEventArgs routedEventArgs)
         {
-            ChangePage(this, new ChangePageEventArgs(WelcomePage, this, ChangePageDirection.Backward));
+            Router.Instance.ChangePage("Welcome", ChangePageDirection.Backward);
         }
 
         private bool CheckError(string error)

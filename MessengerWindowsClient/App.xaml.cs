@@ -13,5 +13,12 @@ namespace MessengerWindowsClient
     /// </summary>
     public partial class App : Application
     {
+        private Router _router;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            _router = new Router();
+        }
     }
 }

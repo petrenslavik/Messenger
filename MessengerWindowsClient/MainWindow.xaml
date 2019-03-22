@@ -15,12 +15,9 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Closed="Window_Closed" WindowStyle="ThreeDBorderWindow">
+        Closed="Window_Closed" WindowStyle="ThreeDBorderWindow" Loaded="Window_OnLoaded">
     <Grid x:Name="Container">
-        <pages:WelcomePage x:Name ="WelcomePage" Visibility="Visible" RegisterPage="{Binding ElementName=RegisterPage}" LoginPage="{Binding ElementName=LoginPage}" BorderThickness="0"/>
-        <pages:MessagesPage x:Name="MessagesPage" Visibility="Collapsed"/>
-        <pages:LoginPage x:Name="LoginPage" Visibility="Collapsed" WelcomePage="{Binding ElementName=WelcomePage}"/>
-        <pages:RegisterPage x:Name="RegisterPage" Visibility="Collapsed" WelcomePage="{Binding ElementName=WelcomePage}"/>
+        <pages:WelcomePage/>
     </Grid>
 </Window>
 

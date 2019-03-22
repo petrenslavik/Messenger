@@ -5,40 +5,41 @@ using System.Windows.Media.Animation;
 
 namespace MessengerWindowsClient.Managers
 {
-    public static class AnimationManager
+    public class AnimationManager
     {
-        private static FrameworkElement _newPage;
-        private static FrameworkElement _oldPage;
-        private static FrameworkElement _container;
-        private static double _containerInitialWidth;
-        private static HorizontalAlignment _alignment;
+        public double WindowWidth { private get; set; }
 
-        static AnimationManager()
+        private FrameworkElement _newPage;
+        private FrameworkElement _oldPage;
+        private FrameworkElement _container;
+        private double _containerInitialWidth;
+        private HorizontalAlignment _alignment;
+
+        public AnimationManager(FrameworkElement container, double windowWidth)
         {
-
+            _container = container;
+            WindowWidth = windowWidth;
         }
 
-        public static void AnimateForwardPage(Control newPage, Control oldPage, FrameworkElement container, double windowWidth)
+        public void AnimateForwardPage(Control newPage, Control oldPage)
         {
             _newPage = newPage;
             _oldPage = oldPage;
-            _container = container;
-            _containerInitialWidth = windowWidth;
+            _containerInitialWidth = WindowWidth;
             _alignment = HorizontalAlignment.Right;
             BeginDoubleAnimation(HorizontalAlignment.Left);
         }
 
-        public static void AnimateBackwardPage(Control newPage, Control oldPage, FrameworkElement container, double windowWidth)
+        public void AnimateBackwardPage(Control newPage, Control oldPage)
         {
             _newPage = newPage;
             _oldPage = oldPage;
-            _container = container;
-            _containerInitialWidth = windowWidth;
+            _containerInitialWidth = WindowWidth;
             _alignment = HorizontalAlignment.Left;
             BeginDoubleAnimation(HorizontalAlignment.Right);
         }
 
-        private static void BeginDoubleAnimation(HorizontalAlignment toSide)
+        private void BeginDoubleAnimation(HorizontalAlignment toSide)
         {
             var animation = CreateDoubleAnimation(_containerInitialWidth, 0, 0.1, TimeSpan.FromSeconds(0.5));
             animation.Completed += ContinueAnimation;
@@ -46,9 +47,10 @@ namespace MessengerWindowsClient.Managers
             RunStoryboard(animation, new PropertyPath(FrameworkElement.WidthProperty));
         }
 
-        private static void ContinueAnimation(object sender, EventArgs e)
+        private void ContinueAnimation(object sender, EventArgs e)
         {
-            _oldPage.Visibility = Visibility.Collapsed;
+            (_container as Panel).Children.Remove(_oldPage);
+            (_container as Panel).Children.Add(_newPage);
             _newPage.Visibility = Visibility.Visible;
             var animation = CreateDoubleAnimation(0, _containerInitialWidth, 0.1, TimeSpan.FromSeconds(0.5));
             animation.Completed += FinishAnimation;
@@ -56,12 +58,12 @@ namespace MessengerWindowsClient.Managers
             RunStoryboard(animation, new PropertyPath(FrameworkElement.WidthProperty));
         }
 
-        private static void FinishAnimation(object sender, EventArgs e)
+        private void FinishAnimation(object sender, EventArgs e)
         {
             _container.HorizontalAlignment = HorizontalAlignment.Stretch;
         }
 
-        private static DoubleAnimation CreateDoubleAnimation(double from, double to, double acceleration, TimeSpan duration)
+        private DoubleAnimation CreateDoubleAnimation(double from, double to, double acceleration, TimeSpan duration)
         {
             return new DoubleAnimation
             {
@@ -73,7 +75,7 @@ namespace MessengerWindowsClient.Managers
             };
         }
 
-        private static void RunStoryboard(Timeline animation, PropertyPath property)
+        private void RunStoryboard(Timeline animation, PropertyPath property)
         {
             var storyBoard = new Storyboard();
             storyBoard.Children.Add(animation);

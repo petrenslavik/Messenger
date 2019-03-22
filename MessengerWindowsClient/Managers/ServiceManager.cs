@@ -50,8 +50,7 @@ namespace MessengerWindowsClient.Managers
         {
             try
             {
-                byte[] key;
-                var encryptedKey = _rsa.GenerateNewAes256EncryptedKey(out key);
+                var encryptedKey = _rsa.GenerateNewAes256EncryptedKey(out var key);
                 _client.SetEncryptedSessionKey(encryptedKey);
                 _aes.SetAesKey(key);
                 Aes = _aes;

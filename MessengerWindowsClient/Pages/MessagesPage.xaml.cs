@@ -23,6 +23,7 @@ namespace MessengerWindowsClient.Pages
     /// <summary>
     /// Interaction logic for MessagesPage.xaml
     /// </summary>
+    [Page("Messages")]
     public partial class MessagesPage : UserControl
     {
         public ServiceManager ServiceManager

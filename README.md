@@ -1,0 +1,2 @@
+# Messenger
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/670c479efcdd41b4999692bfd069b2c8)](https://app.codacy.com/app/pslavindiks/Messenger?utm_source=github.com&utm_medium=referral&utm_content=petrenslavik/Messenger&utm_campaign=Badge_Grade_Settings)
